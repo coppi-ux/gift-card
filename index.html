@@ -2,6 +2,7 @@
 <html>
   <head>
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
       * {
@@ -242,6 +243,82 @@
         position: relative;
         z-index: 1;
       }
+      /* ── MOBILE (phones) ── */
+      @media (max-width: 768px) {
+        #my-image {
+          width: 55vw;
+          top: -30px;
+        }
+
+        #paint-img {
+          width: 28vw;
+          bottom: -50px;
+          right: -80px;
+        }
+
+        #my-text {
+          font-size: 12px;
+          bottom: 50px;
+        } 
+
+        #tp-img {
+          width: 98vw;
+        }
+
+        #tp-text {
+          font-size: 7px;
+          top: 32%;
+          left: 30%;
+          width: 25%;
+        }
+
+        #pan-group {
+          width: 200px;
+          height: 200px;
+        }
+
+        #pan-img {
+          width: 200px;
+        }
+
+        #fire-img {
+          width: 160px;
+          bottom: 80px;
+        }
+
+        #shrimp-img {
+          width: 18vw;
+          bottom: 150px;
+          right: 20px;
+        }
+
+        #page3-text {
+          font-size: 13px;
+        }
+
+        #plate-group {
+          width: 90vw;
+          height: 55vw;
+        }
+
+        #plate-img {
+          width: 160vw;
+          top: -18vw;
+          left: -35vw;
+        }
+
+        #shrimp-cooked-img {
+          width: 160vw;
+          top: -28vw;
+        } 
+
+        #plate-text {
+          font-size: 5px;
+          top: 15%;
+          left: 30%;
+          width: 40%;
+        }
+      }
     </style>
   </head>
   <body>
@@ -317,11 +394,30 @@ Sincerely, copii</b></p>
         e.preventDefault();
       });
 
+      paint.addEventListener('touchstart', function(e) {
+        dragging = true;
+        const touch = e.touches[0];
+        const rect = paint.getBoundingClientRect();
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+        paint.style.left = rect.left + 'px';
+        paint.style.top = rect.top + 'px';
+        paint.style.position = 'fixed';
+        e.preventDefault();
+      }, { passive: false });
+
       document.addEventListener('mousemove', function(e) {
         if (!dragging) return;
         paint.style.left = (e.clientX - offsetX) + 'px';
         paint.style.top = (e.clientY - offsetY) + 'px';
       });
+
+      document.addEventListener('touchmove', function(e) {
+        if (!dragging) return;
+        const touch = e.touches[0];
+        paint.style.left = (touch.clientX - offsetX) + 'px';
+        paint.style.top = (touch.clientY - offsetY) + 'px';
+      }, { passive: false });
 
       document.addEventListener('mouseup', function(e) {
         if (!dragging) return;
@@ -334,6 +430,26 @@ Sincerely, copii</b></p>
         e.clientX < toiletRect.right &&
         e.clientY > toiletRect.top &&
         e.clientY < toiletRect.bottom;
+
+        if (hitToilet) {
+          document.getElementById('page1').style.display = 'none';
+          document.getElementById('page2').style.display = 'flex';
+          document.getElementById('bubble-audio').play();
+        }
+      });
+
+      document.addEventListener('touchend', function(e) {
+        if (!dragging) return;
+        dragging = false;
+        paint.style.cursor = 'grab';
+        const touch = e.changedTouches[0];
+
+        const toiletRect = toilet.getBoundingClientRect();
+        const hitToilet =
+        touch.clientX > toiletRect.left &&
+        touch.clientX < toiletRect.right &&
+        touch.clientY > toiletRect.top &&
+        touch.clientY < toiletRect.bottom;
 
         if (hitToilet) {
           document.getElementById('page1').style.display = 'none';
@@ -472,6 +588,50 @@ Sincerely, copii</b></p>
           emoji.remove();
         }, 1000);
       }     
+    });
+
+    // shrimp touch events
+    shrimp.addEventListener('touchstart', function(e) {
+      shrimpDragging = true;
+      const touch = e.touches[0];
+      const rect = shrimp.getBoundingClientRect();
+      shrimpOffsetX = touch.clientX - rect.left;
+      shrimpOffsetY = touch.clientY - rect.top;
+      shrimp.style.left = rect.left + 'px';
+      shrimp.style.top = rect.top + 'px';
+      shrimp.style.position = 'fixed';
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('touchmove', function(e) {
+      if (!shrimpDragging) return;
+      const touch = e.touches[0];
+      shrimp.style.left = (touch.clientX - shrimpOffsetX) + 'px';
+      shrimp.style.top = (touch.clientY - shrimpOffsetY) + 'px';
+    }, { passive: false });
+
+    document.addEventListener('touchend', function(e) {
+      if (!shrimpDragging) return;
+      shrimpDragging = false;
+      const touch = e.changedTouches[0];
+
+      const panRect = document.getElementById('pan-img').getBoundingClientRect();
+      const hitPan =
+      touch.clientX > panRect.left &&
+      touch.clientX < panRect.right &&
+      touch.clientY > panRect.top &&
+      touch.clientY < panRect.bottom;
+
+      if (hitPan) {
+        shrimp.style.display = 'none';
+        document.getElementById('page3').style.display = 'none';
+        document.getElementById('page4').style.display = 'flex';
+        document.getElementById('bubble-audio').pause();
+        document.getElementById('love-audio').play();
+        setTimeout(function() {
+          document.getElementById('shrimp-cooked-img').classList.add('falling-in');
+        }, 100);
+      }
     });
     </script>
   <!-- background audio -->
