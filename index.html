@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* every page fills the whole screen */
+      .page {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* PAGE 1 — toilet */
+      #page1 {
+        display: flex;
+        background: #5bb8f5;
+      }
+
+      #center-group {
+        position: relative;
+      }
+
+      #my-image {
+        width: 300px;
+        position: relative;
+        top: -60px;
+      }
+
+      #my-text {
+        font-family: 'DotGothic16', monospace;
+        font-size: 16px;
+        color: #0a2a4a;
+        text-align: center;
+        position: absolute;
+        bottom: 70px;          
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;    
+      }
+
+      #paint-img {
+        width: 250px;
+        position: absolute;
+        bottom: -100px;
+        right: -300px;
+        cursor: grab;
+      }
+
+      /* PAGE 2 — toilet paper */
+      #page2 {
+        background: #5bb8f5;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      #page2 {
+        font-family: 'DotGothic16', monospace;
+        font-size: 20px;
+        color: #0a2a4a;
+      }
+
+      #tp-img {
+        width: 80vw;
+      }
+
+      /* the wrapper — needs position relative */
+      #tp-group {
+        position: relative;
+      }
+
+      /* the text sits on top of the image */
+      #tp-text {
+        font-family: 'DotGothic16', monospace;
+        font-size: 10px;
+        color: #111111;
+  
+        position: absolute;
+        top: 35%;     
+        left: 31%;     
+        width: 24%;
+        line-height: 1.6;
+      }
+
+      /* the falling animation */
+      @keyframes fallDown {
+        0%   { transform: translateY(0)    rotate(0deg);   opacity: 1; }
+        100% { transform: translateY(120vh) rotate(20deg); opacity: 0; }
+      }
+
+      #tp-group.falling {
+        animation: fallDown 0.8s ease-in forwards;
+      }
+
+      .bubble {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 33%;
+        object-fit: cover;
+        z-index: 0;
+        opacity: 0.5;   /* makes it subtle so it doesn't cover the toilet paper */
+      }
+
+      #bubble-left   { left: 0; }
+      #bubble-middle { left: 33%; }
+      #bubble-right  { left: 66%; }
+
+      /* make sure toilet paper sits on top of bubbles */
+      #tp-group {
+        position: relative;
+        z-index: 1;
+      }
+
+      #page3 {
+        background: #cdd6d5;
+      }
+
+      #pan-group {
+        position: relative;
+        width: 300px;
+        height: 300px;
+      }
+
+      #fire-img {
+        width: 250px;
+        position: absolute;
+        bottom: 120px;
+        left: 45%;
+        transform: translateX(-50%);
+      }
+
+      #pan-img {
+        width: 300px;
+        position: absolute;
+        top: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      #shrimp-img {
+        width: 150px;
+        position: absolute;
+        bottom: 300px;
+        right: 400px;
+        cursor: grab;
+      }
+
+      #page3-text {
+        font-family: 'DotGothic16', monospace;
+        font-size: 16px;
+        color: #3a1500;
+        margin-bottom: 20px;
+      }
+
+      #page4 {
+        background: #ffb7e4;
+      }
+
+      #plate-group {
+        position: relative;
+        width: 600px;
+        height: 400px;
+      }
+
+      #plate-img {
+        width: 1250px;
+        position: absolute;
+        top: -170px;
+        left: -330px;
+        z-index: 1;       
+      }
+
+      #plate-text {
+        font-family: 'DotGothic16', monospace;
+        font-size: 8px;
+        color: #000000;
+        line-height: 1.8;
+        text-align: center;
+        position: absolute;
+        top: 12%;
+        left: 31%;
+        width: 39%;
+        line-height: 1.6;
+        z-index: 2;        
+      } 
+
+      #plate-text {
+        margin-bottom: 6px;
+      }
+
+      #shrimp-cooked-img {
+        width: 1500px;
+        position: absolute;
+        top: -260px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        opacity: 0;  /* hidden at first */
+      }
+
+      /* shrimp starts above the screen, falls down into place */
+      @keyframes fallIn {
+        0%   { transform: translateX(-50%) translateY(-100vh); opacity: 0; }
+        70%  { transform: translateX(-50%) translateY(20px);   opacity: 1; }
+        100% { transform: translateX(-50%) translateY(0px);    opacity: 1; }
+      }
+
+      #shrimp-cooked-img.falling-in {
+        animation: fallIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      #plate-text {
+        opacity: 0;
+        transition: opacity 1s ease;  /* fades in smoothly over 1 second */
+      }
+
+      .love-gif {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 20%;
+        object-fit: contain;
+        z-index: 0;
+        opacity: 0.7;
+      }
+
+      #love-left  { left: 0; }
+      #love-right { right: 0; }
+
+      /* make sure plate stays on top */
+      #plate-group {
+        position: relative;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- PAGE 1 -->
+    <div class="page" id="page1">
+      <div id="center-group">
+        <img id="my-image" src="toilet.png">
+        <p id="my-text">Drag "paint" to the toilet!</p>
+        <img id="paint-img" src="paint.png">
+      </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page2">
+      <img class="bubble" id="bubble-left"   src="bubbles.gif">
+      <img class="bubble" id="bubble-middle" src="bubbles.gif">
+      <img class="bubble" id="bubble-right"  src="bubbles.gif">
+      <div id="tp-group">
+        <img id="tp-img" src="toilet-paper.png">
+        <p id="tp-text">Hey [Y/N]!<br><br>
+So, I noticed that life sometimes throws those monthly surprises… and I figured you could use a little backup squad to get through them. Think of this as your tiny survival kit, just in case things get a bit… flow-y 😉.<br><br>
+I wanted something practical but thoughtful—something that says, “I’ve got your back” (literally, every month). May it make those days a bit easier, a lot more comfortable, and remind you that you’re never alone, even during the not-so-fun times. Consider it a small gesture of care from me to you—your monthly helper, coming with lots of love and good vibes ❤️.<br><br>
+Sincerely,  copii </p>
+      </div>
+
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="page3">
+      <p id="page3-text">Drag shrimp to the pan!</p>
+      <div id="pan-group">
+        <img id="fire-img" src="fire.gif">
+        <img id="pan-img" src="pan.png">
+      </div>
+      <img id="shrimp-img" src="shrimp-raw.png">
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page" id="page4">
+      <img class="love-gif" id="love-left"  src="love.gif">
+      <img class="love-gif" id="love-right" src="love.gif">
+      <div id="plate-group">
+        <img id="plate-img" src="plate.png">
+          <div id="plate-text">
+            <b></b><p>Hey [Y/N]!<br><br>
+Meet your adopted lil baby shrimp 🦐! You know how life can feel a bit lost and lonely? Well... I decided to adopt a lil pookie, and now it needs a forever home. I picked it because I wanted to give you a cute little companion to keep you company whenever days feel quiet or a bit lonely—think of it as a stand-in and a reminder that I’m always here to support you! After all, everyone deserves a buddy who’s ready to cheer them up, and this shrimp seemed perfect for that!<br><br>
+I hope it brings you lots of smiles, warmth, and tiny squishy hugs every day. My wish for you is that your days are full of laughter, fun little surprises, and comforting moments—even on tough or quiet days. May this little shrimp remind you that you’re never really alone, and that happiness can be found in the smallest, squishiest things.
+So give it a name, cuddle it when you need a boost, and enjoy your new squishy pet who officially belongs to you!<br><br>
+Sincerely, copii</b></p>
+    </div>
+    <img id="shrimp-cooked-img" src="shrimp-cooked.png">
+  </div>
+    </div>
+
+    <script>
+      // ── PAINT DRAG (page 1) ──────────────────
+      const paint = document.getElementById('paint-img');
+      const toilet = document.getElementById('my-image');
+      let dragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      paint.addEventListener('mousedown', function(e) {
+        dragging = true;
+        const rect = paint.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        paint.style.left = rect.left + 'px';
+        paint.style.top = rect.top + 'px';
+        paint.style.position = 'fixed';
+        paint.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        paint.style.left = (e.clientX - offsetX) + 'px';
+        paint.style.top = (e.clientY - offsetY) + 'px';
+      });
+
+      document.addEventListener('mouseup', function(e) {
+        if (!dragging) return;
+        dragging = false;
+        paint.style.cursor = 'grab';
+
+        const toiletRect = toilet.getBoundingClientRect();
+        const hitToilet =
+        e.clientX > toiletRect.left &&
+        e.clientX < toiletRect.right &&
+        e.clientY > toiletRect.top &&
+        e.clientY < toiletRect.bottom;
+
+        if (hitToilet) {
+          document.getElementById('page1').style.display = 'none';
+          document.getElementById('page2').style.display = 'flex';
+          document.getElementById('bubble-audio').play();
+        }
+      });
+
+      // ── TOILET PAPER CLICKS (page 2) ─────────
+      let clickCount = 0;
+
+      document.getElementById('page2').addEventListener('click', function() {
+        clickCount++;
+        if (clickCount >= 5) {
+          document.getElementById('tp-group').classList.add('falling');
+          setTimeout(function() {
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'flex';
+            document.getElementById('bubble-audio').pause();
+          }, 900);
+        } 
+      });
+
+      // ── SHRIMP DRAG (page 3) ─────────────────
+      const shrimp = document.getElementById('shrimp-img');
+      let shrimpDragging = false;
+      let shrimpOffsetX = 0;
+      let shrimpOffsetY = 0;
+
+      shrimp.addEventListener('mousedown', function(e) {
+        shrimpDragging = true;
+        const rect = shrimp.getBoundingClientRect();
+        shrimpOffsetX = e.clientX - rect.left;
+        shrimpOffsetY = e.clientY - rect.top;
+        shrimp.style.left = rect.left + 'px';
+        shrimp.style.top = rect.top + 'px';
+        shrimp.style.position = 'fixed';
+        shrimp.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (!shrimpDragging) return;
+        shrimp.style.left = (e.clientX - shrimpOffsetX) + 'px';
+        shrimp.style.top = (e.clientY - shrimpOffsetY) + 'px';
+      });
+
+      document.addEventListener('mouseup', function(e) {
+        if (!shrimpDragging) return;
+        shrimpDragging = false;
+        shrimp.style.cursor = 'grab';
+
+        const panRect = document.getElementById('pan-img').getBoundingClientRect();
+        const hitPan =
+        e.clientX > panRect.left &&
+        e.clientX < panRect.right &&
+        e.clientY > panRect.top &&
+        e.clientY < panRect.bottom;
+
+        if (hitPan) {
+          shrimp.style.display = 'none';
+          document.getElementById('page3').style.display = 'none';
+          document.getElementById('page4').style.display = 'flex';
+          document.getElementById('bubble-audio').pause();
+          document.getElementById('love-audio').play();
+          // wait a tiny moment then trigger the fall animation
+          setTimeout(function() {
+            document.getElementById('shrimp-cooked-img').classList.add('falling-in');
+          }, 100);
+        }
+      });
+
+      // ── COOKED SHRIMP EATING (page 4) ────────
+      let eatCount = 0;
+
+      document.getElementById('shrimp-cooked-img').addEventListener('click', function() {
+        eatCount++;
+
+        if (eatCount === 1) {
+          // first click — swap to shrimp-cooked2.png
+          document.getElementById('shrimp-cooked-img').src = 'shrimp-cooked2.png';
+        }
+
+        if (eatCount === 2) {
+          // second click — swap to shrimp-cooked3.png
+          document.getElementById('shrimp-cooked-img').src = 'shrimp-cooked3.png';
+        }
+
+        if (eatCount === 3) {
+          // third click — disappear and reveal letter
+          document.getElementById('shrimp-cooked-img').style.display = 'none';
+          document.getElementById('plate-text').style.opacity = '1';
+
+          // wait 2 seconds after letter appears before enabling celebration
+          setTimeout(function() {
+          celebrationReady = true;
+          }, 2000);
+        }
+      });
+      // ── PAGE 4 CELEBRATION CLICKS ────────────
+      let celebrated = false;
+
+      document.getElementById('page4').addEventListener('click', function(e) {
+      // only works after letter is revealed
+      if (!celebrationReady) return;
+
+      // play yippee sound
+      const sound = new Audio('yippee.mp3');
+      sound.play();
+
+      // spawn 5 random emojis around where you clicked
+      const emojis = ['🦐', '✨', '🥹', '⭐', '🎁', '💕', '🌟'];
+
+      for (let i = 0; i < 5; i++) {
+        const emoji = document.createElement('div');
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+        // random position near where you clicked
+        const randomX = e.clientX + (Math.random() - 0.5) * 150;
+        const randomY = e.clientY + (Math.random() - 0.5) * 150;
+
+        emoji.style.cssText = `
+          position: fixed;
+          left: ${randomX}px;
+          top: ${randomY}px;
+          font-size: 30px;
+          pointer-events: none;
+          z-index: 9999;
+          animation: floatUp 1s ease-out forwards;
+          `;
+
+        document.body.appendChild(emoji);
+
+        // remove emoji after animation finishes
+        setTimeout(function() {
+          emoji.remove();
+        }, 1000);
+      }     
+    });
+    </script>
+  <!-- background audio -->
+  <audio id="bubble-audio" src="bubble-audio.mp3" loop></audio>
+  <audio id="love-audio"   src="love-audio.mp3"   loop></audio>
+  </body>
+</html>
